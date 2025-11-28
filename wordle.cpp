@@ -21,9 +21,13 @@ void build_all_string(
     std::set<std::string>& result,
     std::string temp,
     size_t n){
-        if(n == in.length() && floating.empty()){
-            //If we have filled all the spots and used up all the words from floating, it's valid
-            result.insert(temp);
+        if(n == in.length()){
+        //Base case
+            if(floating.empty()){
+            //Floating is empty, meaning we've satisfied all the requirement
+                result.insert(temp);
+            }
+            return;
         }
         else{
             if(in[n] != '-'){
