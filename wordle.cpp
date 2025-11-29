@@ -21,7 +21,13 @@ void build_all_string(
     std::set<std::string>& result,
     std::string temp,
     size_t n){
-        if(n == in.length()){
+        if(in.size() - n < floating.size()){
+        //Earlier base case: if the size of float is larger than 
+        //the remaining spots then impossible so return
+            return;
+        }
+
+        else if(n == in.length()){
         //Base case
             if(floating.empty() && dict.find(temp) != dict.end()){
             //Floating is empty, meaning we've satisfied all the requirement AND 
