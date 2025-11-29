@@ -23,8 +23,9 @@ void build_all_string(
     size_t n){
         if(n == in.length()){
         //Base case
-            if(floating.empty()){
-            //Floating is empty, meaning we've satisfied all the requirement
+            if(floating.empty() && dict.find(temp) != dict.end()){
+            //Floating is empty, meaning we've satisfied all the requirement AND 
+            //Exists in dict 
                 result.insert(temp);
             }
             return;
@@ -37,17 +38,17 @@ void build_all_string(
             else{
                 for(int i = 0; i < 26; i++){
                 //Iterate through all alphabet
-                    char curr = 'A' + i;
+                    char curr = 'a' + i;
                     if(floating.find(curr) != std::string::npos){
                     //If the particular character is in floating: remove and then recurse, then undo that remove
                         int index = floating.find(curr);
-                        floating.erase(index);
-                        build_all_string(in, floating, dict, result, temp+(curr), n+1);
-                        floating.push_back(index);
+                        floating.erase(index, 1);
+                        build_all_string(in, floating, dict, result, temp+curr, n+1);
+                        floating.push_back(curr);
                     }
                     else{
                     //Simply recurse to the next step
-                        build_all_string(in, floating, dict, result, temp+(curr), n+1);
+                        build_all_string(in, floating, dict, result, temp+curr, n+1);
                     }
                 }
             }
@@ -62,19 +63,7 @@ std::set<std::string> wordle(
     const std::set<std::string>& dict)
 {
     std::set<std::string> result{};
-
-    //Recursion
     build_all_string(in, floating, dict, result, "", 0);
-
-    std::set<std::string>::iterator it = result.begin();
-    for(; it != result.end(); ++it){
-        //Iterate through the result
-        if(dict.find(*it) == dict.end()){
-        //An element from result doesn't exist in the dictionary: not valid word
-            result.erase(*it);
-        }
-    }
-
     return result;
 }
 
