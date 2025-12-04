@@ -11,7 +11,6 @@
 #include "dict-eng.h"
 using namespace std;
 
-
 // Add prototypes of helper functions here
 //One recursive call is responsible for nth location in the string
 void build_all_string(
@@ -20,8 +19,10 @@ void build_all_string(
     const std::set<std::string>& dict, 
     std::set<std::string>& result,
     std::string temp,
-    size_t n){
-        if(in.size() - n < floating.size()){
+    size_t n,
+    size_t remainingBlanks){
+        if(remainingBlanks < floating.size())
+        {
         //Earlier base case: if the size of float is larger than 
         //the remaining spots then impossible so return
             return;
@@ -39,7 +40,7 @@ void build_all_string(
         else{
             if(in[n] != '-'){
             //If the particular spot is already determined by in
-                build_all_string(in, floating, dict, result, temp+in[n], n+1);
+                build_all_string(in, floating, dict, result, temp+in[n], n+1, remainingBlanks);
             }
             else{
                 for(int i = 0; i < 26; i++){
@@ -49,12 +50,12 @@ void build_all_string(
                     //If the particular character is in floating: remove and then recurse, then undo that remove
                         int index = floating.find(curr);
                         floating.erase(index, 1);
-                        build_all_string(in, floating, dict, result, temp+curr, n+1);
+                        build_all_string(in, floating, dict, result, temp+curr, n+1, remainingBlanks-1);
                         floating.push_back(curr);
                     }
                     else{
                     //Simply recurse to the next step
-                        build_all_string(in, floating, dict, result, temp+curr, n+1);
+                        build_all_string(in, floating, dict, result, temp+curr, n+1, remainingBlanks-1);
                     }
                 }
             }
@@ -69,7 +70,14 @@ std::set<std::string> wordle(
     const std::set<std::string>& dict)
 {
     std::set<std::string> result{};
-    build_all_string(in, floating, dict, result, "", 0);
+    size_t remainingBlanks = 0;
+    for(size_t i = 0; i < in.size(); i++){
+        if(in[i] =='-'){
+            remainingBlanks++;
+        }
+    }
+
+    build_all_string(in, floating, dict, result, "", 0, remainingBlanks);
     return result;
 }
 
